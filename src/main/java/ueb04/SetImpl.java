@@ -1,6 +1,9 @@
 package ueb04;
 
+import java.lang.annotation.ElementType;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
@@ -9,10 +12,38 @@ class SetImpl<T extends Comparable<T>> implements Set<T> {
 	 * Gibt einen Iterator zurück, welcher alle Elemente des Sets besucht.
 	 */
 	@Override
-	public Iterator<T> iterator() {
-		// Iterator implementieren...
-		throw new UnsupportedOperationException();
+	public Iterator<T> iterator () {
+		return new Iterator<T>() {
+			List<Element> agenda = new LinkedList<Element>();
+			{
+				if (root != null) {
+					agenda.add(root);
+				}
+			}
+
+			@Override
+			public boolean hasNext() {
+				if (agenda.size() > 0) {
+					return true;
+				}
+				return false;
+			}
+
+			@Override
+			public T next() {
+				Element e = agenda.remove(0);
+				if (e.left != null) {
+					agenda.add(e.left);
+				}
+				if (e.right != null) {
+					agenda.add(e.right);
+				}
+				return e.val;
+			}
+		};
 	}
+		// Iterator implementieren...
+
 
 	/**
 	 * Bonusaufgabe: Gibt einen Iterator zurück, welcher nur die Knoten
